@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{AGENT_NAME}}
+  labels:
+    app: {{AGENT_NAME}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{AGENT_NAME}}
+  template:
+    metadata:
+      labels:
+        app: {{AGENT_NAME}}
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "{{AGENT_NAME}}"
+        dapr.io/app-port: "8000"
+        dapr.io/app-protocol: "http"
+        dapr.io/log-level: "info"
+        dapr.io/config: "dapr-config"
+    spec:
+      containers:
+      - name: {{AGENT_NAME}}
+        image: {{IMAGE_NAME}}
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DAPR_HOST
+          value: "localhost"
+        - name: DAPR_HTTP_PORT
+          value: "3500"
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: openai-secret
+              key: apiKey
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{AGENT_NAME}}-service
+  labels:
+    app: {{AGENT_NAME}}
+spec:
+  selector:
+    app: {{AGENT_NAME}}
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: ClusterIP
