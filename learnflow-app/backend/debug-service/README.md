@@ -1,19 +1,26 @@
-# debug-service
+# LearnFlow Debug Service
 
-AI-powered microservice for debug operations using FastAPI and Dapr.
+The Debug Service is responsible for helping students debug their Python code by providing AI-powered error analysis and code correction suggestions.
 
-## Features
-- FastAPI web framework
-- Dapr integration for state management and pub/sub
-- OpenAI SDK for agent logic
-- Health and readiness checks
-- Structured logging
+## Purpose
+- Analyzes code and error messages provided by students
+- Provides clear explanations of what went wrong
+- Offers corrected code with explanations
+- Gives tips to prevent similar errors in the future
+
+## Functionality
+- Processes debugging requests from the triage service
+- Analyzes code and error messages using AI
+- Generates corrected code with detailed explanations
+- Publishes debugging assistance back to the learning system
 
 ## Endpoints
-- `GET /health` - Health check
-- `GET /ready` - Readiness check
-- `POST /chat` - Main chat endpoint
-- `GET /sessions/{user_id}` - User sessions
+- `GET /health`: Health check endpoint
+- `POST /api/process-debug`: Process debugging query using AI
+- `GET /api/stats`: Get service statistics
 
-## Deployment
-This service is designed to run with Dapr sidecar in Kubernetes.
+## Technologies Used
+- FastAPI for web framework
+- Dapr for service-to-service communication
+- Kafka for event streaming
+- OpenAI for intelligent debugging assistance

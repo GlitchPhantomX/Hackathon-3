@@ -1,19 +1,26 @@
-# exercise-service
+# LearnFlow Exercise Service
 
-AI-powered microservice for exercise operations using FastAPI and Dapr.
+The Exercise Service is responsible for generating Python programming exercises for students based on their learning needs and skill level.
 
-## Features
-- FastAPI web framework
-- Dapr integration for state management and pub/sub
-- OpenAI SDK for agent logic
-- Health and readiness checks
-- Structured logging
+## Purpose
+- Generates programming exercises tailored to student needs
+- Provides starter code templates for exercises
+- Creates sample test cases and expected outputs
+- Assesses difficulty levels and learning objectives
+
+## Functionality
+- Processes exercise generation requests from the triage service
+- Creates educational programming challenges using AI
+- Generates starter code, test cases, and learning objectives
+- Publishes exercises back to the learning system
 
 ## Endpoints
-- `GET /health` - Health check
-- `GET /ready` - Readiness check
-- `POST /chat` - Main chat endpoint
-- `GET /sessions/{user_id}` - User sessions
+- `GET /health`: Health check endpoint
+- `POST /api/process-exercise`: Process exercise generation query using AI
+- `GET /api/stats`: Get service statistics
 
-## Deployment
-This service is designed to run with Dapr sidecar in Kubernetes.
+## Technologies Used
+- FastAPI for web framework
+- Dapr for service-to-service communication
+- Kafka for event streaming
+- OpenAI for intelligent exercise generation

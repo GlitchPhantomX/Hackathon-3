@@ -1,19 +1,37 @@
-# concepts-service
+# Concepts Service
 
-AI-powered microservice for concepts operations using FastAPI and Dapr.
+The Concepts Service is responsible for explaining Python programming concepts to students using AI-powered explanations.
 
-## Features
-- FastAPI web framework
-- Dapr integration for state management and pub/sub
-- OpenAI SDK for agent logic
-- Health and readiness checks
-- Structured logging
+## Purpose
+
+The concepts service handles queries that seek explanations of programming concepts, syntax, or language features. It uses OpenAI's API to generate clear, educational explanations with practical examples.
+
+## Functionality
+
+- Processes concept explanation requests from the triage service
+- Generates detailed explanations using AI
+- Provides code examples and best practices
+- Publishes responses back to the learning system
 
 ## Endpoints
-- `GET /health` - Health check
-- `GET /ready` - Readiness check
-- `POST /chat` - Main chat endpoint
-- `GET /sessions/{user_id}` - User sessions
 
-## Deployment
-This service is designed to run with Dapr sidecar in Kubernetes.
+- `GET /health`: Health check endpoint
+- `POST /api/process-query`: Process concept explanation query using AI
+- `GET /api/stats`: Get service statistics
+
+## Architecture
+
+- Built with FastAPI
+- Uses Dapr for service mesh capabilities
+- Communicates via Kafka pub/sub pattern
+- Integrates with OpenAI for AI-powered explanations
+- Containerized with Docker
+- Deployed on Kubernetes
+
+## Configuration
+
+The service uses the following environment variables from the backend config:
+- OpenAI API key and model settings
+- Kafka connection settings
+- Service configuration
+- Logging level

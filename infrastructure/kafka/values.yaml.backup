@@ -1,0 +1,162 @@
+---
+# Kafka Helm Chart Values for LearnFlow Development Environment
+# Based on Bitnami Kafka Helm Chart
+
+## Global Parameters
+global:
+  security:
+    allowInsecureImages: true
+
+image:
+  registry: docker.io
+  repository: bitnamilegacy/kafka
+  tag: "3.6.1-debian-11-r10"
+  pullPolicy: IfNotPresent
+
+
+
+## Authentication Parameters
+auth:
+  clientProtocol: PLAINTEXT  # Disable authentication for development
+  interBrokerProtocol: PLAINTEXT
+
+## Kafka Configuration
+kafka:
+  ## Authentication parameters
+  auth:
+    clientProtocol: plaintext
+    interBrokerProtocol: plaintext
+
+  ## Authorization parameters
+  authorization:
+    type: ""
+
+  ## Listeners configuration
+  listeners:
+    - name: client
+      port: 9092
+      containerPort: 9092
+      protocol: PLAINTEXT
+      external: false
+    - name: interbroker
+      port: 9093
+      containerPort: 9093
+      protocol: PLAINTEXT
+      external: false
+
+  ## advertisedListeners matching the listeners
+  advertisedListeners: "CLIENT://:9092,INTERBROKER://:9093"
+  listenerSecurityProtocolMap: "CLIENT:PLAINTEXT,INTERBROKER:PLAINTEXT"
+
+  ## Number of Kafka brokers
+  numPartitions: 1
+  defaultReplicationFactor: 1
+  minInsyncReplicas: 1
+
+  ## Kafka Configuration Properties
+  configuration: |-
+    # Log retention settings
+    log.retention.hours=168  # 7 days
+    log.retention.bytes=536870912  # 512MB
+    log.segment.bytes=536870912
+    log.cleaner.enable=true
+
+    # Performance settings
+    num.network.threads=3
+    num.io.threads=8
+    socket.send.buffer.bytes=102400
+    socket.receive.buffer.bytes=102400
+    socket.request.max.bytes=104857600
+
+    # Replication settings
+    replica.socket.timeout.ms=30000
+    controller.socket.timeout.ms=30000
+
+    # Consumer settings
+    num.recovery.threads.per.data.dir=1
+    offsets.topic.replication.factor=1
+    transaction.state.log.replication.factor=1
+    transaction.state.log.min.isr=1
+
+## Kafka Broker Parameters
+broker:
+  replicaCount: 1  # Single broker for development
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 500m
+      memory: 1Gi
+
+## Persistence Parameters
+persistence:
+  enabled: true
+  storageClass: ""
+  accessModes:
+    - ReadWriteOnce
+  size: 5Gi  # 5GB for development
+  annotations: {}
+
+## Zookeeper Parameters
+zookeeper:
+  enabled: true  # Enable built-in Zookeeper
+  replicaCount: 1  # Single Zookeeper for development
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+  persistence:
+    enabled: true
+    storageClass: ""
+    accessModes:
+      - ReadWriteOnce
+    size: 2Gi  # 2GB for development
+
+## Service Parameters
+service:
+  type: ClusterIP
+  ports:
+    client: 9092
+    internal: 9093
+  nodePorts:
+    client: ""
+  annotations: {}
+
+## Metrics and Monitoring
+metrics:
+  kafka:
+    enabled: false  # Disable metrics for development to reduce overhead
+  jmx:
+    enabled: false  # Disable JMX for development
+
+## Network Policy
+networkPolicy:
+  enabled: false  # Disable network policy for development
+
+## Service Account
+serviceAccount:
+  create: true
+  name: ""
+  automountServiceAccountToken: false
+
+## Pod Security Context
+podSecurityContext:
+  enabled: true
+  fsGroup: 1001
+
+containerSecurityContext:
+  enabled: true
+  runAsUser: 1001
+  runAsNonRoot: true
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop:
+      - ALL
+
+## Logging
+logLevel: INFO
