@@ -1,5 +1,5 @@
 // src/auth/better-auth.ts
-import { createAuthClient } from 'better-auth/client';
+import { createAuthClient } from 'better-auth/react';
 
 // Create the auth client
 export const authClient = createAuthClient({
